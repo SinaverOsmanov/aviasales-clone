@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--primary-blue-100);
+  font-size: 12px;
+  color: var(--text-black);
+}
+
+h2 {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.icon {
+  position: relative;
+  display: inline-block;
+}
+
+.icon:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.icon.aviasales-logo {
+  width: 82px;
+  height: 90px;
+}
+
+.icon.aviasales-logo:before {
+  background: url('./assets/images/aviasales-logo.svg');
+}
+
+.icon.s-7-logo {
+  width: 110px;
+  height: 36px;
+}
+
+.icon.s-7-logo:before {
+  background: url('./assets/images/s-7-logo.png');
+}
+
+aside {
+  border-radius: 5px;
+  background: var(--primary-white);
+  box-shadow: var(--shadow-light);
+  width: 232px;
+  padding: 10px 0;
+}
+
+.custom-checkbox {
+  cursor: pointer;
+  user-select: none;
+}
+
+.custom-checkbox {
+  font-size: var(--text-size-md);
+}
+
+.custom-checkbox:hover {
+  background: var(--primary-blue-50);
+}
+
+.custom-checkbox input {
+  display: none;
+  position: relative;
+}
+
+.price-filter {
+  border: 1px solid var(--primary-gray);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.price-filter .active {
+  background: var(--primary-blue);
+  color: var(--text-white);
+}
+.price-filter .price-filter_item {
+  cursor: pointer;
+  border-color: var(--primary-gray);
+}
+
+.product-item {
+  padding: 20px;
+  background: var(--primary-white);
+  box-shadow: var(--shadow-light);
+  border-radius: 7px;
+}
+
+.product-item .price {
+  color: var(--primary-blue);
+  font-size: 24px;
+  font-weight: 600;
+}
+
+:root {
+  --text-white: #fff;
+  --text-black: #4a4a4a;
+  --text-gray: #a0b0b9;
+  --primary-gray: #dfe5ec;
+  --primary-white: #fff;
+  --primary-blue: #2196f3;
+  --primary-blue-50: #f1fcff;
+  --primary-blue-100: #f3f7fa;
+
+  --shadow-light: 0px 2px 8px 0px rgba(0, 0, 0, 0.1);
+
+  --text-size-sm: 12px;
+  --text-size-md: 13px;
+  --text-size-lg: 14px;
+}
