@@ -35,7 +35,7 @@ export function SideBar() {
   }, []);
 
   return (
-    <aside>
+    <aside className="h-full">
       <h2 className="my-2.5 px-5">Количество пересадок</h2>
       <TransferFilter filters={transferFilters} onChange={handleFilterChange} />
     </aside>
