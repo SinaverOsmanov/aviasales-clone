@@ -93,14 +93,14 @@ aside {
   border-color: var(--primary-gray);
 }
 
-.product-item {
+.ticket-item {
   padding: 20px;
   background: var(--primary-white);
   box-shadow: var(--shadow-light);
   border-radius: 7px;
 }
 
-.product-item .price {
+.ticket-item .price {
   color: var(--primary-blue);
   font-size: 24px;
   font-weight: 600;
