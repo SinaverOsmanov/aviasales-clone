@@ -27,7 +27,7 @@ function Content() {
   return (
     <div className="w-[502px]">
       <PriceFilter />
-      <ProductList />
+      <TicketList />
     </div>
   );
 }
@@ -69,56 +69,76 @@ function PriceFilter() {
   );
 }
 
-function ProductList() {
+type Ticket = {
+  id: number;
+  ticketNumber: string;
+  airlineLogo: string;
+  price: string;
+  flies: Fly[];
+};
+
+type Fly = {
+  id: number;
+  countries: {
+    from: { city: string; time: string };
+    to: { city: string; time: string };
+  };
+  timeDistance: string;
+  stops: string[];
+};
+
+const tickets: Ticket[] = [
+  {
+    id: Date.now(),
+    ticketNumber: 'SU34567890',
+    airlineLogo: './images/airlines/logo_su.png',
+    price: '13 400 Р',
+    flies: [
+      {
+        countries: {
+          from: { city: 'MOW', time: '10:45' },
+          to: { city: 'HKT', time: '08:00' },
+        },
+        timeDistance: '21ч 15м',
+        id: Date.now(),
+        stops: ['HKG', 'JNB'],
+      },
+    ],
+  },
+];
+
+function TicketList() {
   return (
     <div>
-      {flies.map((fly) => (
-        <ProductItem />
+      {tickets.map((fly: Ticket) => (
+        <TicketItem item={fly} key={fly.id} />
       ))}
     </div>
   );
 }
 
-type FlyType = {
-  countries: {
-    from: { city: string; time: string };
-    to: { city: string; time: string };
-  };
-
-  timeDistance: string;
-  flightNumber: string;
-  airlineLogo: string;
-  price: string;
-  transfers: string[];
-};
-
-const flies: FlyType[] = [
-  {
-    countries: {
-      from: { city: 'MOW', time: '10:45' },
-      to: { city: 'HKT', time: '08:00' },
-    },
-
-    timeDistance: '21ч 15м',
-    flightNumber: 'SU34567890',
-    airlineLogo: './images/airlines/logo_su.png',
-    price: '13 400 Р',
-    transfers: ['HKG', 'JNB'],
-  },
-];
-
-function ProductItem({ item }: FlyType) {
+function TicketItem({ item }: { item: Ticket }) {
   return (
-    <div className="product-item">
+    <div className="ticket-item">
       <div className="mb-5 flex justify-between">
-        <div className="price">
-          13 400<span> Р</span>
-        </div>
+        <div className="price">{item.price}</div>
         <div className="company">
           <i className="icon s-7-logo"></i>
         </div>
       </div>
-      <div>list of flies</div>
+      <div className="flex justify-between">
+        {item.flies.map((fly) => (
+          <FlyItem key={fly.id} />
+        ))}
+      </div>
     </div>
+  );
+}
+
+function FlyItem() {
+  return (
+    <>
+      <div>fly</div>
+    </>
   );
 }
