@@ -24,7 +24,9 @@ module.exports = {
     'plugin:react/jsx-runtime',
     'plugin:react-hooks/recommended',
   ],
-  rules: {},
+  rules: {
+    "no-debugger": 'off'
+  },
   globals: {
     Edit: 'writable',
     console: 'writable',

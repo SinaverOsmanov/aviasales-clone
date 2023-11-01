@@ -1,5 +1,7 @@
 import { SideBar } from './components/Sidebar';
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { Fly, PriceFilterIDs, PriceFilterType, Ticket } from './types';
+import { ticketsService } from './mock/tickets';
 
 const App = () => {
   return (
@@ -32,13 +34,6 @@ function Content() {
   );
 }
 
-type PriceFilterIDs = 'cheap' | 'fast' | 'optimal';
-
-type PriceFilterType = {
-  id: PriceFilterIDs;
-  title: string;
-};
-
 const priceFilters: PriceFilterType[] = [
   { id: 'cheap', title: 'Самый дешевый' },
   { id: 'fast', title: 'Самый быстрый' },
@@ -69,114 +64,59 @@ function PriceFilter() {
   );
 }
 
-type Ticket = {
-  id: number;
-  ticketNumber: string;
-  airlineLogo: string;
-  price: string;
-  flies: Fly[];
-};
-
-type Fly = {
-  id: number;
-  countries: {
-    from: { city: string; time: string };
-    to: { city: string; time: string };
-  };
-  timeDistance: string;
-  stops: string[];
-};
-
-const tickets: Ticket[] = [
-  {
-    id: Date.now(),
-    ticketNumber: 'SU34567890',
-    airlineLogo: './images/airlines/logo_su.png',
-    price: '13 400 Р',
-    flies: [
-      {
-        countries: {
-          from: { city: 'MOW', time: '10:45' },
-          to: { city: 'HKT', time: '08:00' },
-        },
-        timeDistance: '21ч 15м',
-        id: Date.now(),
-        stops: ['HKG', 'JNB'],
-      },
-      {
-        countries: {
-          from: { city: 'MOW', time: '11:20' },
-          to: { city: 'HKT', time: '00:50' },
-        },
-        timeDistance: '13ч 30м',
-        id: Date.now(),
-        stops: ['HKG'],
-      },
-    ],
-  },
-  {
-    id: Date.now(),
-    ticketNumber: 'SU34567890',
-    airlineLogo: './images/airlines/logo_su.png',
-    price: '13 400 Р',
-    flies: [
-      {
-        countries: {
-          from: { city: 'MOW', time: '10:45' },
-          to: { city: 'HKT', time: '08:00' },
-        },
-        timeDistance: '21ч 15м',
-        id: Date.now(),
-        stops: ['HKG', 'JNB'],
-      },
-      {
-        countries: {
-          from: { city: 'MOW', time: '11:20' },
-          to: { city: 'HKT', time: '00:50' },
-        },
-        timeDistance: '13ч 30м',
-        id: Date.now(),
-        stops: ['HKG'],
-      },
-    ],
-  },
-  {
-    id: Date.now(),
-    ticketNumber: 'SU34567890',
-    airlineLogo: './images/airlines/logo_su.png',
-    price: '13 400 Р',
-    flies: [
-      {
-        countries: {
-          from: { city: 'MOW', time: '10:45' },
-          to: { city: 'HKT', time: '08:00' },
-        },
-        timeDistance: '21ч 15м',
-        id: Date.now(),
-        stops: ['HKG', 'JNB'],
-      },
-      {
-        countries: {
-          from: { city: 'MOW', time: '11:20' },
-          to: { city: 'HKT', time: '00:50' },
-        },
-        timeDistance: '13ч 30м',
-        id: Date.now(),
-        stops: ['HKG'],
-      },
-    ],
-  },
-];
-
 function TicketList() {
+  const { getAll, getTheNumberOfTickets } = ticketsService();
+
+  const limitRef = useRef(5);
+  const [lastIndex, setLastIndex] = useState(0);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+
+  function setCurrentTickets(head: number, tail: number) {
+    const newArray: Ticket[] = getAll();
+
+    if (head !== tail) {
+      const slicedArray = head < tail ? newArray.slice(head, tail) : newArray.slice(head);
+
+      const resultArray = tickets.concat(slicedArray);
+
+      setTickets(resultArray);
+    }
+  }
+
+  function moreTickets() {
+    if (getTheNumberOfTickets > 0) {
+      const i =
+        getTheNumberOfTickets - (lastIndex + 1) < limitRef.current
+          ? lastIndex + (getTheNumberOfTickets - (lastIndex + 1))
+          : lastIndex + limitRef.current;
+
+      setCurrentTickets(lastIndex, i);
+
+      setLastIndex(i);
+    }
+  }
+
+  useEffect(() => {
+    if (getTheNumberOfTickets > 0) {
+      setCurrentTickets(lastIndex, limitRef.current);
+      setLastIndex(4);
+    }
+  }, []);
+
   return (
     <div className="tickets">
-      {tickets.map((fly: Ticket) => (
-        <TicketItem item={fly} key={fly.id} />
-      ))}
-      <div className="more">
-        <button className="more-btn">Показать еще 5 билетов!</button>
-      </div>
+      {tickets.length > 0 ? tickets.map((fly: Ticket) => <TicketItem item={fly} key={fly.id} />) : 'Нет билетов'}
+      {tickets.length === 0 ||
+        (getTheNumberOfTickets !== tickets.length && (
+          <div className="more">
+            <button className="more-btn" onClick={moreTickets}>
+              {/* {tickets.length - lastIndex > limitRef.current
+                ? `Показать еще ${limitRef.current} билетов!`
+                : `Осталось ${getTheNumberOfTickets}`} */}
+              {getTheNumberOfTickets - tickets.length}
+            </button>
+          </div>
+        ))}
     </div>
   );
 }
@@ -203,8 +143,8 @@ function FlyItem({ item }: { item: Fly }) {
   return (
     <div className="fly mb-2.5 flex w-full flex-row">
       <FlyItemContent
-        h={`${item.countries.from.city} - ${item.countries.to.city}`}
-        b={`${item.countries.from.time} - ${item.countries.to.time}`}
+        h={`${item.countries.from.city} – ${item.countries.to.city}`}
+        b={`${item.countries.from.time} – ${item.countries.to.time}`}
       />
       <FlyItemContent h={'В пути'} b={item.timeDistance} />
       <FlyItemContent h={`${item.stops.length} пересадки`} b={item.stops.join(', ')} />

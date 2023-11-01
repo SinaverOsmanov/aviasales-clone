@@ -1,10 +1,5 @@
-type TransferFilterIDs = 'all' | 'off' | 'one' | 'two' | 'three';
+import { TransferFilterIDs, transferFiltersType } from '@/types';
 import { useState, useEffect, useCallback } from 'react';
-
-type transferFiltersType = {
-  id: TransferFilterIDs;
-  title: string;
-};
 
 const transferFilters: transferFiltersType[] = [
   {
